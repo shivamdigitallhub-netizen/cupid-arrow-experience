@@ -3,16 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cupid Arrow Match | Digital Web Hive</title>
+<title>Cupid AI Pro | Digital Web Hive</title>
 
 <style>
 *{box-sizing:border-box}
-
 body{
 margin:0;
 height:100vh;
 font-family:system-ui,-apple-system,sans-serif;
-background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+background:linear-gradient(135deg,#ffd1dc,#ffe4e1);
 display:flex;
 justify-content:center;
 align-items:center;
@@ -20,10 +19,11 @@ overflow:hidden;
 transition:.6s;
 }
 
+/* floating emoji */
 .float{
 position:absolute;
 bottom:-20px;
-font-size:22px;
+font-size:20px;
 animation:floatUp linear infinite;
 opacity:.85;
 }
@@ -31,28 +31,37 @@ opacity:.85;
 to{transform:translateY(-120vh);opacity:0}
 }
 
+/* heart burst */
+.burst{
+position:absolute;
+font-size:28px;
+animation:burst 1s ease-out forwards;
+}
+@keyframes burst{
+0%{transform:scale(.5);opacity:1}
+100%{transform:translateY(-120px) scale(1.6);opacity:0}
+}
+
 .card{
 background:#fff;
-padding:32px;
-border-radius:24px;
+padding:36px;
+border-radius:26px;
 width:92%;
-max-width:520px;
+max-width:560px;
 text-align:center;
-box-shadow:0 25px 50px rgba(0,0,0,.25);
+box-shadow:0 25px 60px rgba(0,0,0,.2);
 z-index:2;
 }
 
 .brand{font-weight:800;font-size:18px}
-.tagline{font-size:12px;color:#6b7280;margin-bottom:12px}
-
-h1{margin:10px 0}
+.tagline{font-size:12px;color:#6b7280;margin-bottom:10px}
 
 input{
 width:100%;
 padding:14px;
 margin-bottom:10px;
 border-radius:10px;
-border:1px solid #ddd;
+border:1px solid #eee;
 }
 
 button{
@@ -66,15 +75,20 @@ cursor:pointer;
 margin-top:10px;
 }
 
-button.secondary{background:#111827;margin:6px}
-button.whatsapp{background:#25D366}
+.secondary{background:#111827;margin:6px}
+.whatsapp{background:#25D366}
 
 #cupidIcon{
-font-size:56px;
-display:flex;
-justify-content:center;
-align-items:center;
+font-size:64px;
 margin-top:14px;
+transition:.6s;
+}
+
+.rotate{
+animation:spin 1.2s linear infinite;
+}
+@keyframes spin{
+to{transform:rotate(360deg)}
 }
 
 #analysis{
@@ -82,13 +96,33 @@ margin-top:14px;
 font-size:14px;
 color:#374151;
 line-height:1.6;
-min-height:40px;
+min-height:60px;
+}
+
+#meter{
+margin-top:14px;
+height:14px;
+background:#eee;
+border-radius:20px;
+overflow:hidden;
+}
+
+#bar{
+height:100%;
+width:0%;
+background:#ff4d6d;
+}
+
+#score{
+font-size:18px;
+font-weight:700;
+margin-top:8px;
 }
 
 #result{
-font-size:20px;
+font-size:24px;
 font-weight:700;
-margin-top:18px;
+margin-top:14px;
 }
 
 #history{
@@ -106,16 +140,20 @@ color:#374151;
 <div class="brand">Digital Web Hive</div>
 <div class="tagline">Interactive Experiences That Convert</div>
 
-<h1>Cupid Arrow Match 💘</h1>
+<h1>Cupid AI Pro 💘</h1>
 
 <div id="form">
 <input id="name1" placeholder="Your Name">
 <input id="name2" placeholder="Partner Name">
-<button onclick="shootArrow()">Shoot Cupid Arrow 🏹</button>
+<button onclick="startAI()">Analyse Love Energy 💘</button>
 </div>
 
 <div id="cupidIcon">🏹</div>
 <div id="analysis"></div>
+
+<div id="meter"><div id="bar"></div></div>
+<div id="score"></div>
+
 <div id="result"></div>
 <div id="history"></div>
 
@@ -130,7 +168,7 @@ color:#374151;
 
 <script>
 
-/* Floating emoji */
+/* floating hearts */
 let floatingEmoji="❤️";
 setInterval(()=>{
 const e=document.createElement("div");
@@ -140,114 +178,130 @@ e.style.left=Math.random()*100+"vw";
 e.style.animationDuration=(4+Math.random()*3)+"s";
 document.body.appendChild(e);
 setTimeout(()=>e.remove(),7000);
-},600);
+},700);
 
-/* Result map */
-const cupidResults={
-friends:{text:"🤝 Best Friends Energy!",bg:"#a1c4fd",emoji:"🤝"},
-love:{text:"❤️ True Love Connection!",bg:"#ff9a9e",emoji:"❤️"},
-soul:{text:"💞 Soulmate Vibes!",bg:"#fddb92",emoji:"💞"},
+/* result map */
+const results={
+friends:{text:"🤝 Best Friends Energy!",bg:"#cde7ff",emoji:"🤝"},
+love:{text:"❤️ True Love Connection!",bg:"#ffd1dc",emoji:"❤️"},
+soul:{text:"💞 Soulmate Vibes!",bg:"#ffe4e1",emoji:"💞"},
 marriage:{text:"💍 Wedding Bells Ahead!",bg:"#fbc2eb",emoji:"💍"},
 affection:{text:"🥰 Cute Affection!",bg:"#fad0c4",emoji:"🥰"},
-complicated:{text:"😅 It’s Complicated!",bg:"#cfd9df",emoji:"😅"}
+complicated:{text:"😅 It’s Complicated!",bg:"#e5e7eb",emoji:"😅"}
 };
 
 let n1="",n2="";
 
-/* Helpers */
-function getCommonLetters(a,b){
-let arrA=a.split("");
-let arrB=b.split("");
-let common=[];
-arrA.forEach(l=>{
-const i=arrB.indexOf(l);
-if(i>-1){
-common.push(l);
-arrB.splice(i,1);
-}
+function getCommon(a,b){
+let A=a.split("");
+let B=b.split("");
+let c=[];
+A.forEach(l=>{
+const i=B.indexOf(l);
+if(i>-1){c.push(l);B.splice(i,1);}
 });
-return common;
+return c;
 }
 
-function isPrime(num){
-if(num<2) return false;
-for(let i=2;i<=Math.sqrt(num);i++){
-if(num%i===0) return false;
+function isPrime(n){
+if(n<2)return false;
+for(let i=2;i<=Math.sqrt(n);i++){
+if(n%i===0)return false;
 }
 return true;
 }
 
-function shootArrow(){
+/* AI FLOW */
+function startAI(){
 
-n1=name1.value.trim().toLowerCase();
-n2=name2.value.trim().toLowerCase();
+n1=name1.value.toLowerCase().trim();
+n2=name2.value.toLowerCase().trim();
 
-if(!n1||!n2){
-alert("Please enter both names");
-return;
-}
+if(!n1||!n2){alert("Enter both names");return;}
 
 form.style.display="none";
-cupidIcon.innerText="💘";
+cupidIcon.classList.add("rotate");
 
-setTimeout(applyLogic,600);
+analysis.innerHTML="✨ Cupid AI scanning emotional energy…";
+
+setTimeout(()=>{
+analysis.innerHTML+="<br>❤️ Checking vowel chemistry…";
+},800);
+
+setTimeout(()=>{
+analysis.innerHTML+="<br>🔢 Running prime compatibility logic…";
+},1600);
+
+setTimeout(()=>{
+cupidIcon.classList.remove("rotate");
+cupidIcon.innerText="💘";
+runLogic();
+},2400);
 }
 
-function applyLogic(){
+/* SMART LOGIC */
+function runLogic(){
 
 const vowels=["a","e","i","o","u"];
-const common=getCommonLetters(n1.replace(/\s/g,""),n2.replace(/\s/g,""));
+const common=getCommon(n1.replace(/\s/g,""),n2.replace(/\s/g,""));
 const count=common.length;
+const vowelCount=common.filter(l=>vowels.includes(l)).length;
 
-let vowelCount=common.filter(l=>vowels.includes(l)).length;
-let resultKey="complicated";
+let scoreVal=30+count*10+vowelCount*8;
+if(isPrime(count)) scoreVal+=15;
+if(scoreVal>100) scoreVal=100;
 
-analysis.innerHTML=`
-Cupid is analysing…<br>
-Common Letters: ${common.join(", ")||"None"}<br>
-Total Matches: ${count}
-`;
+/* animate score counter */
+let current=0;
+const interval=setInterval(()=>{
+current++;
+bar.style.width=current+"%";
+score.innerText="Compatibility: "+current+"%";
+if(current>=scoreVal) clearInterval(interval);
+},20);
 
-if(isPrime(count)){
-resultKey="love";
-analysis.innerHTML+=`<br>Prime Number Rule Activated ❤️`;
+/* decide result */
+let key="complicated";
+if(scoreVal>85) key="marriage";
+else if(scoreVal>70) key="soul";
+else if(scoreVal>55) key="love";
+else if(scoreVal>40) key="friends";
+else if(scoreVal>30) key="affection";
+
+setTimeout(()=>showResult(key,common,scoreVal),1200);
 }
 
-if(vowelCount>0 && vowelCount>=count/2){
-resultKey="friends";
-analysis.innerHTML+=`<br>Vowel Energy Detected 🤝`;
-}
+function showResult(key,common,scoreVal){
 
-if(count>=5){
-resultKey="marriage";
-analysis.innerHTML+=`<br>High Match Energy 💍`;
-}
-
-if(count===3||count===7){
-resultKey="soul";
-analysis.innerHTML+=`<br>Soulmate Alignment 💞`;
-}
-
-showResult(resultKey);
-}
-
-function showResult(key){
-
-const r=cupidResults[key];
+const r=results[key];
 
 document.body.style.background=
 `linear-gradient(135deg,${r.bg},#ffffff)`;
 
 floatingEmoji=r.emoji;
 
+analysis.innerHTML+=`
+<br><br>Common Letters: ${common.join(", ")||"None"}
+<br>Match Score: ${scoreVal}%`;
+
 result.innerText=r.text;
 
 history.innerHTML=
 `Last match: <strong>${n1}</strong> ${r.emoji} <strong>${n2}</strong>`;
 
+/* heart burst */
+for(let i=0;i<14;i++){
+const h=document.createElement("div");
+h.className="burst";
+h.innerText=r.emoji;
+h.style.left=(45+Math.random()*10)+"vw";
+h.style.bottom="40vh";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),1000);
+}
 }
 
-/* Share */
+/* share */
 function share(){
 navigator.clipboard.writeText(
 `${n1} ${floatingEmoji} ${n2} — ${result.innerText}`
@@ -257,12 +311,11 @@ alert("Result copied 🚀");
 
 function openWhatsApp(){
 const msg=encodeURIComponent(
-"Hi Digital Web Hive! I loved this Cupid Arrow experience and want something similar."
+"Hi Digital Web Hive! I loved this Cupid AI Pro experience."
 );
 window.open("https://wa.me/64212456560?text="+msg,"_blank");
 }
 
 </script>
-
 </body>
 </html>
