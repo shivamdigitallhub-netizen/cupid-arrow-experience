@@ -19,7 +19,7 @@ overflow:hidden;
 transition:.6s;
 }
 
-/* floating emoji */
+/* floating hearts */
 .float{
 position:absolute;
 bottom:-20px;
@@ -31,7 +31,7 @@ opacity:.85;
 to{transform:translateY(-120vh);opacity:0}
 }
 
-/* heart burst */
+/* burst animation */
 .burst{
 position:absolute;
 font-size:28px;
@@ -119,10 +119,17 @@ font-weight:700;
 margin-top:8px;
 }
 
+#pairTitle{
+font-size:20px;
+font-weight:700;
+margin-top:12px;
+color:#ff4d6d;
+}
+
 #result{
 font-size:24px;
 font-weight:700;
-margin-top:14px;
+margin-top:10px;
 }
 
 #history{
@@ -154,6 +161,7 @@ color:#374151;
 <div id="meter"><div id="bar"></div></div>
 <div id="score"></div>
 
+<div id="pairTitle"></div>
 <div id="result"></div>
 <div id="history"></div>
 
@@ -214,8 +222,8 @@ return true;
 /* AI FLOW */
 function startAI(){
 
-n1=name1.value.toLowerCase().trim();
-n2=name2.value.toLowerCase().trim();
+n1=name1.value.trim();
+n2=name2.value.trim();
 
 if(!n1||!n2){alert("Enter both names");return;}
 
@@ -243,7 +251,7 @@ runLogic();
 function runLogic(){
 
 const vowels=["a","e","i","o","u"];
-const common=getCommon(n1.replace(/\s/g,""),n2.replace(/\s/g,""));
+const common=getCommon(n1.toLowerCase().replace(/\s/g,""),n2.toLowerCase().replace(/\s/g,""));
 const count=common.length;
 const vowelCount=common.filter(l=>vowels.includes(l)).length;
 
@@ -251,7 +259,7 @@ let scoreVal=30+count*10+vowelCount*8;
 if(isPrime(count)) scoreVal+=15;
 if(scoreVal>100) scoreVal=100;
 
-/* animate score counter */
+/* animate score */
 let current=0;
 const interval=setInterval(()=>{
 current++;
@@ -260,7 +268,6 @@ score.innerText="Compatibility: "+current+"%";
 if(current>=scoreVal) clearInterval(interval);
 },20);
 
-/* decide result */
 let key="complicated";
 if(scoreVal>85) key="marriage";
 else if(scoreVal>70) key="soul";
@@ -279,6 +286,9 @@ document.body.style.background=
 `linear-gradient(135deg,${r.bg},#ffffff)`;
 
 floatingEmoji=r.emoji;
+
+/* ⭐ NEW FEATURE — SHOW NAMES */
+pairTitle.innerText=`${n1} ${r.emoji} ${n2}`;
 
 analysis.innerHTML+=`
 <br><br>Common Letters: ${common.join(", ")||"None"}
@@ -301,7 +311,6 @@ setTimeout(()=>h.remove(),1000);
 }
 }
 
-/* share */
 function share(){
 navigator.clipboard.writeText(
 `${n1} ${floatingEmoji} ${n2} — ${result.innerText}`
