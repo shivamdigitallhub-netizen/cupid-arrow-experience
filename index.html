@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LoveSync Experience 💖
- | Digital Web Hive</title>
+<title>LoveSync Experience | Digital Web Hive</title>
 
 <style>
 *{box-sizing:border-box}
@@ -26,7 +25,7 @@ transition:.6s;
 @keyframes auraSoft{from{box-shadow:0 0 20px rgba(255,77,109,.25)}to{box-shadow:0 0 45px rgba(255,77,109,.45)}}
 @keyframes auraStrong{from{box-shadow:0 0 30px rgba(255,77,109,.45)}to{box-shadow:0 0 75px rgba(255,77,109,.75)}}
 
-/* Floating Emoji */
+/* Floating emoji */
 .float{position:absolute;bottom:-20px;font-size:20px;animation:floatUp linear infinite;opacity:.85;}
 @keyframes floatUp{to{transform:translateY(-120vh);opacity:0}}
 
@@ -49,7 +48,18 @@ z-index:2;
 .tagline{font-size:12px;color:#6b7280;margin-bottom:10px}
 
 input{width:100%;padding:14px;margin-bottom:10px;border-radius:10px;border:1px solid #eee;}
-button{padding:14px 26px;border:none;border-radius:999px;font-weight:600;background:#ff4d6d;color:#fff;cursor:pointer;margin-top:10px;}
+
+button{
+padding:14px 26px;
+border:none;
+border-radius:999px;
+font-weight:600;
+background:#ff4d6d;
+color:#fff;
+cursor:pointer;
+margin-top:10px;
+}
+
 .secondary{background:#111827;margin:6px}
 .whatsapp{background:#25D366}
 
@@ -58,8 +68,10 @@ button{padding:14px 26px;border:none;border-radius:999px;font-weight:600;backgro
 @keyframes spin{to{transform:rotate(360deg)}}
 
 #analysis{margin-top:14px;font-size:14px;color:#374151;line-height:1.6;min-height:60px;}
+
 #meter{margin-top:14px;height:14px;background:#eee;border-radius:20px;overflow:hidden;}
 #bar{height:100%;width:0%;background:#ff4d6d;}
+
 #score{font-size:18px;font-weight:700;margin-top:8px;}
 #pairTitle{font-size:20px;font-weight:700;margin-top:12px;color:#ff4d6d;}
 #result{font-size:24px;font-weight:700;margin-top:10px;}
@@ -74,12 +86,12 @@ button{padding:14px 26px;border:none;border-radius:999px;font-weight:600;backgro
 <div class="brand">Digital Web Hive</div>
 <div class="tagline">Interactive Experiences That Convert</div>
 
-<h1>Cupid AI Pro Ultra 💘</h1>
+<h1>LoveSync Experience 💖</h1>
 
 <div id="form">
 <input id="name1" placeholder="Your Name">
 <input id="name2" placeholder="Partner Name">
-<button onclick="startAI()">Analyse Love Energy 💘</button>
+<button onclick="startAI()">Reveal Love Energy 💘</button>
 </div>
 
 <div id="cupidIcon">🏹</div>
@@ -126,7 +138,7 @@ complicated:{text:"😅 It’s Complicated!",bg:"#e5e7eb",emoji:"😅"}
 
 let n1="",n2="";
 
-/* Voice AI Typing Effect */
+/* Voice AI typing */
 function typeAI(text,delay=20){
 return new Promise(resolve=>{
 let i=0;
@@ -165,9 +177,9 @@ form.style.display="none";
 cupidIcon.classList.add("rotate");
 analysis.innerHTML="";
 
-await typeAI("✨ Cupid AI scanning emotional energy…");
-await typeAI("❤️ Checking vowel chemistry…");
-await typeAI("🔢 Running prime compatibility logic…");
+await typeAI("✨ LoveSync AI scanning emotional energy…");
+await typeAI("❤️ Checking vowel harmony…");
+await typeAI("🔢 Calculating destiny alignment…");
 
 cupidIcon.classList.remove("rotate");
 cupidIcon.innerText="💘";
@@ -214,7 +226,6 @@ document.body.style.background=
 
 floatingEmoji=r.emoji;
 
-/* Aura Glow */
 card.classList.remove("auraSoft","auraStrong");
 if(scoreVal>75){card.classList.add("auraStrong");}
 else{card.classList.add("auraSoft");}
@@ -228,7 +239,7 @@ result.innerText=r.text;
 history.innerHTML=
 `Last match: <strong>${n1}</strong> ${r.emoji} <strong>${n2}</strong>`;
 
-/* Heart burst */
+/* heart burst */
 for(let i=0;i<14;i++){
 const h=document.createElement("div");
 h.className="burst";
@@ -249,7 +260,7 @@ alert("Result copied 🚀");
 
 function openWhatsApp(){
 const msg=encodeURIComponent(
-"Hi Digital Web Hive! I loved this Cupid AI Pro Ultra experience."
+"Hi Digital Web Hive! I loved the LoveSync Experience."
 );
 window.open("https://wa.me/64212456560?text="+msg,"_blank");
 }
