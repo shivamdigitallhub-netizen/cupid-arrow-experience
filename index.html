@@ -43,15 +43,8 @@ body{
   z-index:2;
 }
 
-.brand{
-  font-weight:800;
-  font-size:18px;
-}
-.tagline{
-  font-size:12px;
-  color:#6b7280;
-  margin-bottom:12px;
-}
+.brand{font-weight:800;font-size:18px}
+.tagline{font-size:12px;color:#6b7280;margin-bottom:12px}
 
 h1{margin:10px 0}
 
@@ -77,30 +70,11 @@ button{
 button.secondary{background:#111827;margin:6px}
 button.whatsapp{background:#25D366}
 
-#arrow{
-  font-size:48px;
-  margin-top:18px;
-  transition:.5s;
-}
-
-#result{
-  font-size:20px;
-  font-weight:700;
-  margin-top:18px;
-}
-
-#history{
-  margin-top:10px;
-  font-size:14px;
-  color:#374151;
-}
-
-#actions{margin-top:14px}
-
-#cta{
-  margin-top:14px;
-  font-size:13px;
-}
+#arrow{font-size:48px;margin-top:18px;transition:.5s}
+#status{margin-top:12px;font-weight:600}
+#result{font-size:20px;font-weight:700;margin-top:18px}
+#history{margin-top:10px;font-size:14px;color:#374151}
+#cta{margin-top:14px;font-size:13px}
 </style>
 </head>
 
@@ -119,6 +93,7 @@ button.whatsapp{background:#25D366}
 <button onclick="shootArrow()">Shoot Cupid Arrow 🏹</button>
 </div>
 
+<div id="status"></div>
 <div id="arrow">🏹</div>
 <div id="result"></div>
 <div id="history"></div>
@@ -139,9 +114,8 @@ Want interactive campaigns like this?<br>
 
 <script>
 
-/* Floating emoji system */
+/* ---------- FLOATING EMOJI SYSTEM ---------- */
 let floatingEmoji="❤️";
-
 setInterval(()=>{
   const e=document.createElement("div");
   e.className="float";
@@ -152,22 +126,47 @@ setInterval(()=>{
   setTimeout(()=>e.remove(),7000);
 },600);
 
-/* Cupid results */
-const cupidResults=[
-{ text:"❤️ Perfect Match!", bg:"#ff9a9e", emoji:"❤️"},
-{ text:"💞 Soul Connection!", bg:"#fddb92", emoji:"💞"},
-{ text:"💍 Wedding Bells!", bg:"#fbc2eb", emoji:"💍"},
-{ text:"🥰 Cute Chemistry!", bg:"#fad0c4", emoji:"🥰"},
-{ text:"🤝 Best Friends!", bg:"#a1c4fd", emoji:"🤝"},
-{ text:"😅 Complicated!", bg:"#cfd9df", emoji:"😅"}
-];
+/* ---------- RESULT MAP ---------- */
+const cupidResults={
+friends:{text:"🤝 Best Friends Energy!",bg:"#a1c4fd",emoji:"🤝"},
+love:{text:"❤️ True Love Connection!",bg:"#ff9a9e",emoji:"❤️"},
+soul:{text:"💞 Soulmate Vibes!",bg:"#fddb92",emoji:"💞"},
+marriage:{text:"💍 Wedding Bells Ahead!",bg:"#fbc2eb",emoji:"💍"},
+affection:{text:"🥰 Cute Affection!",bg:"#fad0c4",emoji:"🥰"},
+complicated:{text:"😅 It’s Complicated!",bg:"#cfd9df",emoji:"😅"}
+};
 
 let n1="",n2="";
 
+/* ---------- HELPER FUNCTIONS ---------- */
+function getCommonLetters(a,b){
+let arrA=a.split("");
+let arrB=b.split("");
+let common=[];
+
+arrA.forEach(l=>{
+const i=arrB.indexOf(l);
+if(i>-1){
+common.push(l);
+arrB.splice(i,1);
+}
+});
+return common;
+}
+
+function isPrime(num){
+if(num<2) return false;
+for(let i=2;i<=Math.sqrt(num);i++){
+if(num%i===0) return false;
+}
+return true;
+}
+
+/* ---------- MAIN GAME ---------- */
 function shootArrow(){
 
-n1=name1.value.trim();
-n2=name2.value.trim();
+n1=name1.value.trim().toLowerCase();
+n2=name2.value.trim().toLowerCase();
 
 if(!n1||!n2){
 alert("Please enter both names");
@@ -175,25 +174,59 @@ return;
 }
 
 form.style.display="none";
+status.innerText="Cupid is analysing your connection…";
 
-/* Arrow animation */
-arrow.innerText="🏹";
-arrow.style.transform="translateX(0px)";
-
-setTimeout(()=>{
 arrow.style.transform="translateX(40px) rotate(20deg)";
-},300);
 
 setTimeout(()=>{
 arrow.innerText="💘";
-showResult();
+applyLogic();
 },900);
 
 }
 
-function showResult(){
+/* ---------- SMART RULE LOGIC ---------- */
+function applyLogic(){
 
-const r=cupidResults[Math.floor(Math.random()*cupidResults.length)];
+const vowels=["a","e","i","o","u"];
+const common=getCommonLetters(n1.replace(/\s/g,""),n2.replace(/\s/g,""));
+
+const count=common.length;
+
+status.innerText=
+`Common letters found: ${common.join(", ") || "None"} (${count})`;
+
+let vowelCount=common.filter(l=>vowels.includes(l)).length;
+
+let resultKey="complicated";
+
+/* Rule 1: Prime number → Love direction */
+if(isPrime(count)){
+resultKey="love";
+}
+
+/* Rule 2: Many vowels → Friends/Affection */
+if(vowelCount>0 && vowelCount>=count/2){
+resultKey="friends";
+}
+
+/* Rule 3: High match count → Marriage */
+if(count>=5){
+resultKey="marriage";
+}
+
+/* Rule 4: Medium match + prime → Soulmates */
+if(count===3 || count===7){
+resultKey="soul";
+}
+
+showResult(resultKey);
+}
+
+/* ---------- SHOW RESULT ---------- */
+function showResult(key){
+
+const r=cupidResults[key];
 
 document.body.style.background=
 `linear-gradient(135deg,${r.bg},#ffffff)`;
@@ -210,7 +243,7 @@ JSON.stringify({name1:n1,name2:n2,result:r.text}));
 
 }
 
-/* Share */
+/* ---------- SHARE ---------- */
 function share(){
 navigator.clipboard.writeText(
 `Cupid Match by Digital Web Hive:\n${n1} ${floatingEmoji} ${n2}\n${result.innerText}`
@@ -218,15 +251,15 @@ navigator.clipboard.writeText(
 alert("Result copied 🚀");
 }
 
-/* WhatsApp CTA */
+/* ---------- WHATSAPP CTA ---------- */
 function openWhatsApp(){
 const msg=encodeURIComponent(
-"Hi Digital Web Hive! I liked this Cupid Arrow experience and want something similar for my brand."
+"Hi Digital Web Hive! I loved this Cupid Arrow experience and want something similar for my brand."
 );
 window.open("https://wa.me/64212456560?text="+msg,"_blank");
 }
 
-/* Load history */
+/* ---------- LOAD HISTORY ---------- */
 window.onload=()=>{
 const data=localStorage.getItem("cupidLast");
 if(data){
