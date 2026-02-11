@@ -9,38 +9,37 @@
 *{box-sizing:border-box}
 
 body{
-  margin:0;
-  height:100vh;
-  font-family:system-ui,-apple-system,sans-serif;
-  background:linear-gradient(135deg,#ff9a9e,#fad0c4);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-  transition:.6s;
+margin:0;
+height:100vh;
+font-family:system-ui,-apple-system,sans-serif;
+background:linear-gradient(135deg,#ff9a9e,#fad0c4);
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+transition:.6s;
 }
 
-/* Floating emoji */
 .float{
-  position:absolute;
-  bottom:-20px;
-  font-size:22px;
-  animation:floatUp linear infinite;
-  opacity:.85;
+position:absolute;
+bottom:-20px;
+font-size:22px;
+animation:floatUp linear infinite;
+opacity:.85;
 }
 @keyframes floatUp{
-  to{transform:translateY(-120vh);opacity:0}
+to{transform:translateY(-120vh);opacity:0}
 }
 
 .card{
-  background:#fff;
-  padding:32px;
-  border-radius:24px;
-  width:92%;
-  max-width:520px;
-  text-align:center;
-  box-shadow:0 25px 50px rgba(0,0,0,.25);
-  z-index:2;
+background:#fff;
+padding:32px;
+border-radius:24px;
+width:92%;
+max-width:520px;
+text-align:center;
+box-shadow:0 25px 50px rgba(0,0,0,.25);
+z-index:2;
 }
 
 .brand{font-weight:800;font-size:18px}
@@ -49,32 +48,54 @@ body{
 h1{margin:10px 0}
 
 input{
-  width:100%;
-  padding:14px;
-  margin-bottom:10px;
-  border-radius:10px;
-  border:1px solid #ddd;
+width:100%;
+padding:14px;
+margin-bottom:10px;
+border-radius:10px;
+border:1px solid #ddd;
 }
 
 button{
-  padding:14px 26px;
-  border:none;
-  border-radius:999px;
-  font-weight:600;
-  background:#ff4d6d;
-  color:#fff;
-  cursor:pointer;
-  margin-top:10px;
+padding:14px 26px;
+border:none;
+border-radius:999px;
+font-weight:600;
+background:#ff4d6d;
+color:#fff;
+cursor:pointer;
+margin-top:10px;
 }
 
 button.secondary{background:#111827;margin:6px}
 button.whatsapp{background:#25D366}
 
-#arrow{font-size:48px;margin-top:18px;transition:.5s}
-#status{margin-top:12px;font-weight:600}
-#result{font-size:20px;font-weight:700;margin-top:18px}
-#history{margin-top:10px;font-size:14px;color:#374151}
-#cta{margin-top:14px;font-size:13px}
+#cupidIcon{
+font-size:56px;
+display:flex;
+justify-content:center;
+align-items:center;
+margin-top:14px;
+}
+
+#analysis{
+margin-top:14px;
+font-size:14px;
+color:#374151;
+line-height:1.6;
+min-height:40px;
+}
+
+#result{
+font-size:20px;
+font-weight:700;
+margin-top:18px;
+}
+
+#history{
+margin-top:10px;
+font-size:14px;
+color:#374151;
+}
 </style>
 </head>
 
@@ -93,40 +114,35 @@ button.whatsapp{background:#25D366}
 <button onclick="shootArrow()">Shoot Cupid Arrow 🏹</button>
 </div>
 
-<div id="status"></div>
-<div id="arrow">🏹</div>
+<div id="cupidIcon">🏹</div>
+<div id="analysis"></div>
 <div id="result"></div>
 <div id="history"></div>
 
-<div id="actions">
+<div>
 <button class="secondary" onclick="share()">📤 Share</button>
 <button class="secondary" onclick="location.reload()">🔄 Restart</button>
 <br>
 <button class="whatsapp" onclick="openWhatsApp()">💬 Chat on WhatsApp</button>
 </div>
 
-<div id="cta">
-Want interactive campaigns like this?<br>
-<strong>Digital Web Hive</strong> • digitalwebhive.com
-</div>
-
 </div>
 
 <script>
 
-/* ---------- FLOATING EMOJI SYSTEM ---------- */
+/* Floating emoji */
 let floatingEmoji="❤️";
 setInterval(()=>{
-  const e=document.createElement("div");
-  e.className="float";
-  e.innerText=floatingEmoji;
-  e.style.left=Math.random()*100+"vw";
-  e.style.animationDuration=(4+Math.random()*3)+"s";
-  document.body.appendChild(e);
-  setTimeout(()=>e.remove(),7000);
+const e=document.createElement("div");
+e.className="float";
+e.innerText=floatingEmoji;
+e.style.left=Math.random()*100+"vw";
+e.style.animationDuration=(4+Math.random()*3)+"s";
+document.body.appendChild(e);
+setTimeout(()=>e.remove(),7000);
 },600);
 
-/* ---------- RESULT MAP ---------- */
+/* Result map */
 const cupidResults={
 friends:{text:"🤝 Best Friends Energy!",bg:"#a1c4fd",emoji:"🤝"},
 love:{text:"❤️ True Love Connection!",bg:"#ff9a9e",emoji:"❤️"},
@@ -138,12 +154,11 @@ complicated:{text:"😅 It’s Complicated!",bg:"#cfd9df",emoji:"😅"}
 
 let n1="",n2="";
 
-/* ---------- HELPER FUNCTIONS ---------- */
+/* Helpers */
 function getCommonLetters(a,b){
 let arrA=a.split("");
 let arrB=b.split("");
 let common=[];
-
 arrA.forEach(l=>{
 const i=arrB.indexOf(l);
 if(i>-1){
@@ -162,7 +177,6 @@ if(num%i===0) return false;
 return true;
 }
 
-/* ---------- MAIN GAME ---------- */
 function shootArrow(){
 
 n1=name1.value.trim().toLowerCase();
@@ -174,56 +188,49 @@ return;
 }
 
 form.style.display="none";
-status.innerText="Cupid is analysing your connection…";
+cupidIcon.innerText="💘";
 
-arrow.style.transform="translateX(40px) rotate(20deg)";
-
-setTimeout(()=>{
-arrow.innerText="💘";
-applyLogic();
-},900);
-
+setTimeout(applyLogic,600);
 }
 
-/* ---------- SMART RULE LOGIC ---------- */
 function applyLogic(){
 
 const vowels=["a","e","i","o","u"];
 const common=getCommonLetters(n1.replace(/\s/g,""),n2.replace(/\s/g,""));
-
 const count=common.length;
 
-status.innerText=
-`Common letters found: ${common.join(", ") || "None"} (${count})`;
-
 let vowelCount=common.filter(l=>vowels.includes(l)).length;
-
 let resultKey="complicated";
 
-/* Rule 1: Prime number → Love direction */
+analysis.innerHTML=`
+Cupid is analysing…<br>
+Common Letters: ${common.join(", ")||"None"}<br>
+Total Matches: ${count}
+`;
+
 if(isPrime(count)){
 resultKey="love";
+analysis.innerHTML+=`<br>Prime Number Rule Activated ❤️`;
 }
 
-/* Rule 2: Many vowels → Friends/Affection */
 if(vowelCount>0 && vowelCount>=count/2){
 resultKey="friends";
+analysis.innerHTML+=`<br>Vowel Energy Detected 🤝`;
 }
 
-/* Rule 3: High match count → Marriage */
 if(count>=5){
 resultKey="marriage";
+analysis.innerHTML+=`<br>High Match Energy 💍`;
 }
 
-/* Rule 4: Medium match + prime → Soulmates */
-if(count===3 || count===7){
+if(count===3||count===7){
 resultKey="soul";
+analysis.innerHTML+=`<br>Soulmate Alignment 💞`;
 }
 
 showResult(resultKey);
 }
 
-/* ---------- SHOW RESULT ---------- */
 function showResult(key){
 
 const r=cupidResults[key];
@@ -238,36 +245,22 @@ result.innerText=r.text;
 history.innerHTML=
 `Last match: <strong>${n1}</strong> ${r.emoji} <strong>${n2}</strong>`;
 
-localStorage.setItem("cupidLast",
-JSON.stringify({name1:n1,name2:n2,result:r.text}));
-
 }
 
-/* ---------- SHARE ---------- */
+/* Share */
 function share(){
 navigator.clipboard.writeText(
-`Cupid Match by Digital Web Hive:\n${n1} ${floatingEmoji} ${n2}\n${result.innerText}`
+`${n1} ${floatingEmoji} ${n2} — ${result.innerText}`
 );
 alert("Result copied 🚀");
 }
 
-/* ---------- WHATSAPP CTA ---------- */
 function openWhatsApp(){
 const msg=encodeURIComponent(
-"Hi Digital Web Hive! I loved this Cupid Arrow experience and want something similar for my brand."
+"Hi Digital Web Hive! I loved this Cupid Arrow experience and want something similar."
 );
 window.open("https://wa.me/64212456560?text="+msg,"_blank");
 }
-
-/* ---------- LOAD HISTORY ---------- */
-window.onload=()=>{
-const data=localStorage.getItem("cupidLast");
-if(data){
-const last=JSON.parse(data);
-history.innerHTML=
-`Last match: <strong>${last.name1}</strong> ❤️ <strong>${last.name2}</strong>`;
-}
-};
 
 </script>
 
